@@ -9,6 +9,7 @@ interface IProps {
   code: string;
   setCode: (code: string) => void;
   runCode: () => void;
+  loading: boolean;
 }
 
 const CodeEditor = ({
@@ -17,6 +18,7 @@ const CodeEditor = ({
   code,
   setCode,
   runCode,
+  loading,
 }: IProps) => {
   const onLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (
@@ -60,7 +62,7 @@ const CodeEditor = ({
             <option value="python">Python</option>
           </Select>
         </Flex>
-        <Button colorScheme="blue" onClick={runCode}>
+        <Button colorScheme="blue" onClick={runCode} isLoading={loading}>
           Run
         </Button>
       </Flex>

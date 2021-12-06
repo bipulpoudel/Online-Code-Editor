@@ -3,6 +3,7 @@ import { Flex } from "@chakra-ui/layout";
 import Output from "../components/Output";
 import CodeEditor from "../components/CodeEditor";
 import axios from "axios";
+import crypto from "crypto";
 
 const Home = () => {
   const [language, setLanguage] = useState<
@@ -10,20 +11,38 @@ const Home = () => {
   >("c");
 
   const [code, setCode] = useState<string>("");
-
-  const [output, setOutput] = useState<string>("Output testing??");
+  const [output, setOutput] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const runCode = async () => {
     const formData = {
       language,
       code,
     };
-    const response = await axios.post(
-      process.env.REACT_APP_API_URL + "/api",
+
+    setLoading(true);
+
+    let requestId = localStorage.getItem("requestId");
+
+    if (!requestId) {
+      requestId = crypto.randomBytes(6).toString("hex");
+
+      localStorage.setItem("requestId", requestId);
+    }
+
+    await axios.post(
+      process.env.REACT_APP_API_URL + `/api/generateCode/${requestId}`,
       formData
     );
 
-    console.log(response);
+    setTimeout(async () => {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + `/api/output/${requestId}`
+      );
+
+      setOutput(response.data);
+      setLoading(false);
+    }, 1000);
   };
 
   const clearOutput = () => {
@@ -61,7 +80,7 @@ int main() {
 }`);
     }
     // eslint-disable-next-line
-  }, [language, code]);
+  }, [language]);
 
   return (
     <Flex w="full" h="100vh">
@@ -71,8 +90,9 @@ int main() {
         code={code}
         setCode={setCode}
         runCode={runCode}
+        loading={loading}
       />
-      <Output output={output} clearOutput={clearOutput} />
+      <Output output={output} clearOutput={clearOutput} loading={loading} />
     </Flex>
   );
 };

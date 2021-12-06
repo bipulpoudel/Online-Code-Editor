@@ -1,7 +1,10 @@
 import express from "express";
-import fs from "fs";
-import { exec, execSync } from "child_process";
 import cors from "cors";
+import fs from "fs";
+import { getCOutput } from "./services/c";
+import { getCPPOutput } from "./services/cpp";
+import { getPythonOutput } from "./services/python";
+import { getJavascriptOutput } from "./services/javascript";
 
 const app = express();
 const PORT = 8000;
@@ -13,83 +16,35 @@ app.get("/", (req, res) => {
   res.send("API for code editor");
 });
 
-app.post("/api/", async (req, res) => {
-  const { code } = req.body;
-  await fs.writeFileSync("./files/code-runner.c", code);
+app.post("/api/generateCode/:requestId", async (req, res) => {
+  const { code, language } = req.body;
 
-  const response = await execSync("gcc ./files/code-runner.c", {
-    encoding: "utf8",
-  });
+  const requestId = req.params.requestId;
 
-  console.log(response);
-  console.log(response.toString());
+  if (language === "c") {
+    await getCOutput({ code, requestId });
+  }
 
-  // await fs.unlinkSync("./files/code-runner.c");
+  if (language === "c++") {
+    await getCPPOutput({ code, requestId });
+  }
 
-  // await fs.unlinkSync("./a.out");
+  if (language === "python") {
+    await getPythonOutput({ code, requestId });
+  }
 
-  res.send("I am working fine");
+  if (language === "javascript") {
+    await getJavascriptOutput({ code, requestId });
+  }
 
-  // const testCode = `
-  // #include <stdio.h>
-  // #include <stdlib.h>
+  res.send("Code generated successfully");
+});
 
-  // // Driver program
-  // int main(void)
-  // {
-  //     printf("I am running inside a c program");
+app.get("/api/output/:requestId", async (req, res) => {
+  const requestId = req.params.requestId;
+  const output = await fs.readFileSync(`./services/tmp/${requestId}.txt`);
 
-  //     return 0;
-  // }`;
-
-  // //   const replacedCode = code.replace("console.log", "testFunction");
-
-  // //   const func = new Function(
-  // //     "name",
-  // //     `
-  // //     const testFunction = (data) => {
-  // //         console.log("I am running??" + data);
-  // //     };
-  // //     ${replacedCode}`
-  // //   );
-  // //   const output = func("test");
-  // fs.writeFileSync("code-runner.py", testCode);
-  // fs.writeFileSync("code-runner.cpp", testCode);
-  // fs.writeFileSync("code-runner.c", testCode);
-  // //   const compiler = "g++";
-  // //   const version = "-std=c++11";
-  // //   const out = "-o";
-  // //   const infile = "code-runner.cpp";
-  // //   const outfile = "code-runner.out";
-  // //   const command = "hello world";
-
-  // const compiler = "python";
-  // const version = "graphing.py";
-  // const out = "-o";
-  // const infile = "code-runner.py";
-  // const outfile = "code-runner.out";
-  // const command = "hello world";
-
-  // exec("gcc code-runner.c", (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`exec error: ${error}`);
-  //     return;
-  //   }
-  //   console.log(`stdout: ${stdout}`);
-  //   console.error(`stderr: ${stderr}`);
-
-  //   exec("./a.out", (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   });
-  // });
-
-  // //const test2 = await execSync("g++ code-runner.cpp");
-  // res.send("Worked file successfully");
+  res.send(output);
 });
 
 app.listen(PORT, () => {

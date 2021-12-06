@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import AceEditor from "react-ace";
 
-import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/theme-tomorrow";
 
 interface IProps {
   code: string;
@@ -29,7 +29,7 @@ const Editor = ({ language, code, setCode }: IProps) => {
     <AceEditor
       placeholder="Placeholder Text"
       mode={language === "c" || language === "c++" ? "c_cpp" : language}
-      theme="monokai"
+      theme="tomorrow"
       onChange={setCode}
       fontSize={20}
       showPrintMargin={true}
