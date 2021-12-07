@@ -27,7 +27,7 @@ export const getCOutput = async ({
       }
 
       exec(`./services/tmp/${requestId}`, async (error, stdout, stderr) => {
-        await fs.unlinkSync(`./services/tmp/${requestId}`);
+        fs.unlinkSync(`./services/tmp/${requestId}`);
         if (error) {
           return fs.writeFileSync(
             `./services/tmp/${requestId}.txt`,

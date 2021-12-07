@@ -8,16 +8,10 @@ interface IProps {
   output: string;
   clearOutput: () => void;
   loading: boolean;
+  getOutput: () => void;
 }
 
-const Output = ({ output, clearOutput, loading }: IProps) => {
-  if (loading) {
-    return (
-      <Flex w="full" h="full" align="center" justify="center">
-        <Spinner />
-      </Flex>
-    );
-  }
+const Output = ({ output, clearOutput, loading, getOutput }: IProps) => {
 
   return (
     <Flex
@@ -37,12 +31,17 @@ const Output = ({ output, clearOutput, loading }: IProps) => {
         justify="space-between"
       >
         <Text>Output</Text>
+        <Flex>
+        <Button onClick={getOutput} mr="3" isLoading={loading}>
+          Refresh
+        </Button>
         <Button onClick={clearOutput} colorScheme="red">
           Clear
         </Button>
+        </Flex>
       </Flex>
       <Flex w="full" h="full" bg="whitesmoke">
-        <AceEditor
+        {loading ? <Spinner/>: <AceEditor
           placeholder="Write and run the program to show output"
           theme="tomorrow"
           fontSize={20}
@@ -63,6 +62,8 @@ const Output = ({ output, clearOutput, loading }: IProps) => {
             width: "100%",
           }}
         />
+        }
+        
       </Flex>
     </Flex>
   );

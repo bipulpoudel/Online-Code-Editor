@@ -35,6 +35,19 @@ const Home = () => {
       formData
     );
 
+    getOutput();
+  };
+
+  const getOutput = async () => {
+    setLoading(true);
+    let requestId = localStorage.getItem("requestId");
+
+    if (!requestId) {
+      requestId = crypto.randomBytes(6).toString("hex");
+
+      localStorage.setItem("requestId", requestId);
+    }
+
     setTimeout(async () => {
       const response = await axios.get(
         process.env.REACT_APP_API_URL + `/api/output/${requestId}`
@@ -43,7 +56,7 @@ const Home = () => {
       setOutput(response.data);
       setLoading(false);
     }, 1000);
-  };
+  }
 
   const clearOutput = () => {
     setOutput("");
@@ -92,7 +105,7 @@ int main() {
         runCode={runCode}
         loading={loading}
       />
-      <Output output={output} clearOutput={clearOutput} loading={loading} />
+      <Output output={output} clearOutput={clearOutput} getOutput={getOutput} loading={loading} />
     </Flex>
   );
 };
