@@ -12,7 +12,6 @@ interface IProps {
 }
 
 const Output = ({ output, clearOutput, loading, getOutput }: IProps) => {
-
   return (
     <Flex
       w="full"
@@ -32,38 +31,40 @@ const Output = ({ output, clearOutput, loading, getOutput }: IProps) => {
       >
         <Text>Output</Text>
         <Flex>
-        <Button onClick={getOutput} mr="3" isLoading={loading}>
-          Refresh
-        </Button>
-        <Button onClick={clearOutput} colorScheme="red">
-          Clear
-        </Button>
+          <Button onClick={getOutput} mr="3" isDisabled={loading}>
+            Refresh
+          </Button>
+          <Button onClick={clearOutput} colorScheme="red">
+            Clear
+          </Button>
         </Flex>
       </Flex>
       <Flex w="full" h="full" bg="whitesmoke">
-        {loading ? <Spinner/>: <AceEditor
-          placeholder="Write and run the program to show output"
-          theme="tomorrow"
-          fontSize={20}
-          showPrintMargin={true}
-          showGutter={false}
-          highlightActiveLine={false}
-          value={output}
-          readOnly={true}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            showLineNumbers: true,
-            tabSize: 2,
-          }}
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
-        />
-        }
-        
+        {loading ? (
+          <Spinner />
+        ) : (
+          <AceEditor
+            placeholder="Write and run the program to show output"
+            theme="tomorrow"
+            fontSize={20}
+            showPrintMargin={true}
+            showGutter={false}
+            highlightActiveLine={false}
+            value={output}
+            readOnly={true}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              enableSnippets: true,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
+          />
+        )}
       </Flex>
     </Flex>
   );

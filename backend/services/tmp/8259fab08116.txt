@@ -1,5 +1,1 @@
-Command failed: python ./services/tmp/8259fab08116.py
-Traceback (most recent call last):
-  File "./services/tmp/8259fab08116.py", line 1, in <module>
-    prin("Hello world")
-NameError: name 'prin' is not defined
+Hello world
